@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, Markup
 import httplib
 import paramiko
 from json2html import *
+from ryu.services.protocols.bgp.bgpspeaker import BGPSpeaker
 
 class FlowRetriever(object):
     def __init__(self, server):
@@ -63,9 +64,7 @@ def bgp_view():
 
     try:
         client = paramiko.SSHClient()
-        client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.WarningPolicy)
-    
         client.connect(hostname, username = 'ryu', password = 'ryu', port=port)
 
 
