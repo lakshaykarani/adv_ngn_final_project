@@ -70,10 +70,10 @@ def bgp_view():
 
 
 
-        stdin_neighbor, stdout_neighbor, stderr_neighbor = client.exec_command('show neighbor')
+        (stdin_neighbor, stdout_neighbor, stderr_neighbor) = client.exec_command("show neighbor")
         print stdout_neighbor.read()
         
-        stdin_rib, stdout_rib, stderr_rib = client.exec_command('show rib all')
+        (stdin_rib, stdout_rib, stderr_rib) = client.exec_command("show rib all")
         print stdout_rib.read()
 
     finally:
