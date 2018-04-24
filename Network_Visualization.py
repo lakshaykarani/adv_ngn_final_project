@@ -66,7 +66,7 @@ def bgp_view():
         client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.WarningPolicy)
     
-        client.connect(hostname, port=port)
+        client.connect(hostname, username = 'ryu', password = 'ryu', port=port)
 
 
 
