@@ -66,7 +66,7 @@ def bgp_view():
         client = paramiko.SSHClient()
         client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.WarningPolicy)
-        client.connect(hostname, username = 'ngn', password = 'ngnlab123', port=port)
+        client.connect(hostname, username = 'ubuntu', password = 'lab123', port=port)
 
 
         stdin, stdout_route, stderr = client.exec_command("sudo vtysh -c \"show ip bgp\"")
