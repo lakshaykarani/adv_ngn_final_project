@@ -1,4 +1,4 @@
-import json
+import json, time
 from flask import Flask, render_template, request, Markup
 import httplib
 import paramiko
@@ -66,19 +66,22 @@ def bgp_view():
         client = paramiko.SSHClient()
         client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.WarningPolicy)
-        client.connect(hostname, username = 'ubuntu', password = 'lab123', port=port)
+        client.connect(hostname, username = 'root', password = 'lab123', port=port)
+	
 
+        stdin, stdout_route, stderr = client.exec_command("sudo vtysh -c 'show ip bgp'")
+	print(stdout_route.read())
+        stdin, stdout_neighbor, stderr = client.exec_command('sudo vtysh -c "show ip bgp summary"')
+	print(stdout_neighbor.read())
 
-        stdin, stdout_route, stderr = client.exec_command("sudo vtysh -c \"show ip bgp\"")
-	print(stdout_route)
-        stdin, stdout_neighbor, stderr = client.exec_command("sudo vtysh -c \"show ip bgp summary\"")
-	print(stdout_neighbor)
+        bgp_routes = stdout_route.read()
+        bgp_neighbor = stdout_neighbor.read()
 
     finally:
         client.close()
 
 	
-    return render_template('bgp_view.html')
+    return render_template('bgp_view.html',bgp_routes,bgp_neighbor)
 
 @app.route('/optimize', methods = ['GET', 'POST'])
 def optimize():
