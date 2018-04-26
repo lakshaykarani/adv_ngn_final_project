@@ -81,7 +81,7 @@ def bgp_view():
         client.close()
 
 	
-    return render_template('bgp_view.html',bgp_routes,bgp_neighbor)
+    return render_template('bgp_view.html',quagga_bgp_routes,quagga_bgp_neighbors)
 
 @app.route('/optimize', methods = ['GET', 'POST'])
 def optimize():
