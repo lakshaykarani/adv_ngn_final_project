@@ -59,21 +59,20 @@ def bgp_view():
 
     
 
-    hostname = "10.0.1.2"
-    port = 4990
+    hostname = "10.0.1.1"
+    port = 22
 
     try:
         client = paramiko.SSHClient()
+        client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.WarningPolicy)
-        client.connect(hostname, username = 'ryu', password = 'ryu', port=port)
+        client.connect(hostname, username = 'ngn', password = 'ngnlab123', port=port)
 
 
-
-        (stdin_neighbor, stdout_neighbor, stderr_neighbor) = client.exec_command("show neighbor")
-        print stdout_neighbor.read()
-        
-        (stdin_rib, stdout_rib, stderr_rib) = client.exec_command("show rib all")
-        print stdout_rib.read()
+        stdin, stdout_route, stderr = client.exec_command("sudo vtysh -c \"show ip bgp\"")
+	print(stdout_route)
+        stdin, stdout_neighbor, stderr = client.exec_command("sudo vtysh -c \"show ip bgp summary\"")
+	print(stdout_neighbor)
 
     finally:
         client.close()
