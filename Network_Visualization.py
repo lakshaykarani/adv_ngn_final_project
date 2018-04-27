@@ -5,42 +5,6 @@ import paramiko
 from json2html import *
 from ryu.services.protocols.bgp.bgpspeaker import BGPSpeaker
 
-class FlowRetriever(object):
-    def __init__(self, server):
-        self.server = server
-
-    def get(self, path, function):
-        ret = self.rest_call(path, function, 'GET')
-        return json.loads(ret[2])
-
-    def set(self, path, data):
-        ret = self.rest_call(path, data, 'POST')
-        return ret[0] == 200
-
-    def rest_call(self, path, data, action):
-
-
-        headers = {
-            'Content-type': 'application/json',
-            'Accept': 'application/json',
-        }
-
-        if action == 'POST':
-            body = json.dumps(data)
-        else:
-            body = ''
-
-        conn = httplib.HTTPConnection(self.server, 8080)
-        print(body)
-        conn.request(action, path, body, headers)
-
-        response = conn.getresponse()
-        ret = (response.status, response.reason, response.read())
-        print(ret)
-        conn.close()
-        return ret
-
-retriever = FlowRetriever('192.168.56.104')
 app = Flask(__name__, static_url_path='')
 
 
@@ -70,18 +34,26 @@ def bgp_view():
 	
 
         stdin, stdout_route, stderr = client.exec_command("sudo vtysh -c 'show ip bgp'")
-	print(stdout_route.read())
         stdin, stdout_neighbor, stderr = client.exec_command('sudo vtysh -c "show ip bgp summary"')
-	print(stdout_neighbor.read())
 
-        bgp_routes = stdout_route.read()
-        bgp_neighbor = stdout_neighbor.read()
+        quagga_bgp_routes = stdout_route.read()
+        quagga_bgp_neighbors = stdout_neighbor.read()
+        
+        quagga_bgp_routes.replace("Removed","Removed<br><br>")
+        quagga_bgp_routes.replace("incomplete","incomplete<br><br>")
+        quagga_bgp_routes.replace("Path","Path<br><br>")
+        quagga_bgp_routes.replace("*>","<br><br>*>", 5)
 
+        quagga_bgp_neighbors.replace("memory","memory<br><br>")
+        quagga_bgp_neighbors.replace("State/PfxRcd","State/PfxRcd<br><br>")
+
+        print(quagga_bgp_routes)
+        print(quagga_bgp_neighbors)
     finally:
         client.close()
 
 	
-    return render_template('bgp_view.html',quagga_bgp_routes,quagga_bgp_neighbors)
+    return render_template('bgp_view.html',quagga_bgp_routes=Markup(quagga_bgp_routes), quagga_bgp_neighbors = Markup(quagga_bgp_neighbors))
 
 @app.route('/optimize', methods = ['GET', 'POST'])
 def optimize():
