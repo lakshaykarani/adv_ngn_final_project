@@ -46,7 +46,7 @@ def bgp_view():
         client.close()
 
 	
-    return render_template('bgp_view.html',quagga_bgp_routes=Markup(quagga_bgp_routes), quagga_bgp_neighbors = Markup(quagga_bgp_neighbors),ryu_bgp_routes=Markup(quagga_bgp_routes), ryu_bgp_neighbors = Markup(quagga_bgp_neighbors))
+    return render_template('bgp_view.html',quagga_bgp_routes=Markup(quagga_bgp_routes), quagga_bgp_neighbors = Markup(quagga_bgp_neighbors),ryu_bgp_routes=Markup(ryu_bgp_routes), ryu_bgp_neighbors = Markup(ryu_bgp_neighbors))
 
 @app.route('/optimize', methods = ['GET', 'POST'])
 def optimize():
