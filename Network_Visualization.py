@@ -18,6 +18,13 @@ def bgp_config():
 
     return render_template('bgp_config.html')
 
+@app.route('/configure')
+def bgp_config():
+
+
+    status = "BGP Configured"
+    return render_template('bgp_config.html', status=status)
+
 @app.route('/bgp_view')
 def bgp_view():
 
